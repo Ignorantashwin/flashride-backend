@@ -2,7 +2,8 @@ package com.flashRide.userService.controller;
 
 import com.flashRide.userService.dto.request.LoginRequest;
 import com.flashRide.userService.dto.request.RegisterRequest;
-import com.flashRide.userService.dto.response.UserResponse;
+import com.flashRide.userService.dto.response.LoginResponse;
+import com.flashRide.userService.dto.response.RegisterResponse;
 import com.flashRide.userService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse>createUser(@RequestBody RegisterRequest request){
-        UserResponse response = userService.registerUser(request);
+    public ResponseEntity<RegisterResponse>createUser(@RequestBody RegisterRequest request){
+        RegisterResponse response = userService.registerUser(request);
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/login")
-    public ResponseEntity<UserResponse> loginUser(@RequestBody LoginRequest request){
-        UserResponse response = userService.loginUser(request);
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request){
+        LoginResponse response = userService.loginUser(request);
         return ResponseEntity.ok().body(response);
     }
 }

@@ -2,11 +2,13 @@ package com.flashRide.userService.service;
 
 import com.flashRide.userService.dto.request.LoginRequest;
 import com.flashRide.userService.dto.request.RegisterRequest;
-import com.flashRide.userService.dto.response.UserResponse;
+import com.flashRide.userService.dto.response.LoginResponse;
+import com.flashRide.userService.dto.response.RegisterResponse;
 import com.flashRide.userService.entity.User;
 import com.flashRide.userService.enums.Role;
 import com.flashRide.userService.repository.UserRepository;
 import com.flashRide.userService.security.CustomUserDetails;
+import com.flashRide.userService.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,10 +25,11 @@ import java.time.LocalDateTime;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public UserResponse registerUser(RegisterRequest request){
+    public RegisterResponse registerUser(RegisterRequest request){
   if (userRepository.existsByUserName(request.userName())){
       throw new RuntimeException("Username already exist");
   }
@@ -42,20 +45,22 @@ public class UserService {
 
         System.out.println("HASHED PASSWORD = " + user1.getHashedPassword());
 User savedUser = userRepository.save(user1);
-return new UserResponse(savedUser.getId(), savedUser.getUserId(), savedUser.getUserName(), savedUser.getRole(),savedUser.getCreatedAt());
+return new RegisterResponse(savedUser.getId(), savedUser.getUserId(), savedUser.getUserName(), savedUser.getRole(),savedUser.getCreatedAt());
 
     }
 
-    public UserResponse loginUser(LoginRequest request){
+    public LoginResponse loginUser(LoginRequest request){
      Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.userName(), request.password()));
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
-        return UserResponse.builder()
+        String token = jwtService.generateAccessToken(user);
+        return LoginResponse.builder()
                 .id(user.getId())
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .role(user.getRole())
                 .createdAt(user.getCreatedAt())
+                .jwtToken(token)
                 .build();
  }
 

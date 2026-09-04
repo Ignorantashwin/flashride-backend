@@ -5,5 +5,5 @@ import lombok.Builder;
 
 import java.time.LocalDateTime;
 @Builder
-public record UserResponse(Long id, String userId, String userName, Role role, LocalDateTime createdAt) {
+public record RegisterResponse(Long id, String userId, String userName, Role role, LocalDateTime createdAt) {
 }
