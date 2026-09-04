@@ -14,3 +14,5 @@ target/
 
 # Logs
 *.log
+user-service/keys/private.pem
+user-service/keys/public.pem
